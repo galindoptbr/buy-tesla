@@ -1,101 +1,110 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import teslaImage from "@/public/tesla.jpg";
+
+const formatTime = (milliseconds: number): string => {
+  const totalSeconds = Math.floor(milliseconds / 1000);
+  const seconds = totalSeconds % 60;
+  const totalMinutes = Math.floor(totalSeconds / 60);
+  const minutes = totalMinutes % 60;
+  const totalHours = Math.floor(totalMinutes / 60);
+  const hours = totalHours % 24;
+  const totalDays = Math.floor(totalHours / 24);
+  const days = totalDays % 30;
+  const totalMonths = Math.floor(totalDays / 30);
+  const months = totalMonths % 12;
+  const years = Math.floor(totalMonths / 12);
+
+  return `${years} anos, ${months} meses, ${days} dias, ${hours} horas, ${minutes} minutos, ${seconds} segundos`;
+};
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [elapsedTime, setElapsedTime] = useState<number>(0);
+  const [isRunning, setIsRunning] = useState<boolean>(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const startTimer = (): void => {
+    const now = Date.now();
+    setStartTime(now - elapsedTime);
+    setIsRunning(true);
+    localStorage.setItem("startTime", now.toString());
+  };
+
+  const stopTimer = (): void => {
+    setIsRunning(false);
+    localStorage.removeItem("startTime");
+  };
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout | undefined;
+
+    if (isRunning) {
+      interval = setInterval(() => {
+        if (startTime !== null) {
+          setElapsedTime(Date.now() - startTime);
+        }
+      }, 1000);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [isRunning, startTime]);
+
+  useEffect(() => {
+    const savedStartTime = localStorage.getItem("startTime");
+    if (savedStartTime) {
+      const now = Date.now();
+      const savedElapsedTime = now - parseInt(savedStartTime, 10);
+      setElapsedTime(savedElapsedTime);
+      setStartTime(parseInt(savedStartTime, 10));
+      setIsRunning(true);
+    }
+  }, []);
+
+  return (
+    <div>
+      <div className="w-[393px] bg-zinc-800 h-[802px] m-auto relative">
+        {/* Imagem de fundo */}
+        <Image
+          src={teslaImage}
+          alt="image tesla model 3 white"
+          layout="fill"
+          objectFit="cover"
+          className="absolute inset-0"
+        />
+
+        {/* Contador e botões sobrepostos */}
+        <div className="absolute top-10 flex flex-col items-center justify-center">
+          {/* Contador */}
+          <div className="text-white text-center mb-8">
+            <h1 className="text-4xl font-bold">Tempo ate comprar meu Tesla</h1>
+            <p className="text-2xl mt-4">{formatTime(elapsedTime)}</p>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        {/* Botões */}
+        <div className="flex justify-center items-center absolute bottom-16 w-full">
+          {!isRunning ? (
+            <button
+              onClick={startTimer}
+              className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg"
+            >
+              Iniciar
+            </button>
+          ) : (
+            <button
+              onClick={stopTimer}
+              className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg"
+            >
+              Parar
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
