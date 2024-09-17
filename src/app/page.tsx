@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import teslaImage from "@/public/tesla.jpg";
+import teslaImage from "@/app/tesla.jpg";
 
 const formatTime = (milliseconds: number): string => {
   const totalSeconds = Math.floor(milliseconds / 1000);
