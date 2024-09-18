@@ -91,14 +91,14 @@ export default function Home() {
           {!isRunning ? (
             <button
               onClick={startTimer}
-              className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md"
+              className="px-4 py-2 bg-[#3E6AE1] text-white font-semibold rounded-md"
             >
               Iniciar Timer
             </button>
           ) : (
             <button
               onClick={stopTimer}
-              className="px-5 py-2 bg-zinc-700 text-white font-semibold rounded-md"
+              className="px-5 py-2 bg-[#EEEEEE] text-zinc-500 font-semibold rounded-md"
             >
               Comprei
             </button>
