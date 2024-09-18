@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import teslaImage from "@/app/tesla.jpg";
+import teslaImage from "@/app/tesla.png";
 
 const formatTime = (milliseconds: number): string => {
   const totalSeconds = Math.floor(milliseconds / 1000);
@@ -68,7 +68,7 @@ export default function Home() {
 
   return (
     <div>
-      <div className="w-[393px] bg-zinc-800 h-[802px] m-auto relative">
+      <div className="w-[393px] bg-zinc-800 h-[790px] m-auto relative">
         {/* Imagem de fundo */}
         <Image
           src={teslaImage}
@@ -81,9 +81,9 @@ export default function Home() {
         {/* Contador e botões sobrepostos */}
         <div className="absolute top-10 flex flex-col items-center justify-center">
           {/* Contador */}
-          <div className="text-white text-center mb-8">
-            <h1 className="text-4xl font-bold">Tempo ate comprar meu Tesla</h1>
-            <p className="text-2xl mt-4">{formatTime(elapsedTime)}</p>
+          <div className="text-zinc-900 text-center mb-8">
+            <h1 className="text-4xl font-bold">Tesla Model 3</h1>
+            <p className="text-2xl mt-4 px-4">{formatTime(elapsedTime)}</p>
           </div>
         </div>
         {/* Botões */}
@@ -91,14 +91,14 @@ export default function Home() {
           {!isRunning ? (
             <button
               onClick={startTimer}
-              className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg"
+              className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md"
             >
               Iniciar
             </button>
           ) : (
             <button
               onClick={stopTimer}
-              className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg"
+              className="px-5 py-2 bg-zinc-700 text-white font-semibold rounded-md"
             >
               Parar
             </button>
